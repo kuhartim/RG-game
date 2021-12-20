@@ -19,6 +19,9 @@ export class Node {
       this.updateMatrix();
     }
 
+    this.transform = mat4.create();
+    this.updateTransform();
+
     this.camera = options.camera || null;
     this.mesh = options.mesh || null;
 
@@ -33,6 +36,15 @@ export class Node {
     mat4.getRotation(this.rotation, this.matrix);
     mat4.getTranslation(this.translation, this.matrix);
     mat4.getScaling(this.scale, this.matrix);
+  }
+
+  getGlobalTransform() {
+    if (!this.parent) {
+      return mat4.clone(this.transform);
+    } else {
+      let transform = this.parent.getGlobalTransform();
+      return mat4.mul(transform, transform, this.transform);
+    }
   }
 
   updateMatrix() {
