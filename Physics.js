@@ -8,7 +8,7 @@ export class Physics {
   update(dt) {
     this.scene.traverse((node) => {
       if (node.velocity) {
-        node.updateTransform();
+        //node.updateTransform();
         vec3.scaleAndAdd(node.translation, node.translation, node.velocity, dt);
         console.log(1, node.translation);
         this.scene.traverse((other) => {

@@ -9,8 +9,8 @@ import { vec3, mat4 } from "./lib/gl-matrix-module.js";
 
 const carDefaults = {
   velocity: [0, 0, 0],
-  maxSpeed: 3,
-  friction: 0.2,
+  maxSpeed: 20,
+  friction: 0.1,
   acceleration: 20,
 };
 
@@ -69,12 +69,6 @@ class App extends Application {
       0,
       -Math.cos(c.rotation[1])
     );
-    const right = vec3.set(
-      vec3.create(),
-      Math.cos(c.rotation[1]),
-      0,
-      -Math.sin(c.rotation[1])
-    );
 
     // 1: add movement acceleration
     let acc = vec3.create();
@@ -85,24 +79,17 @@ class App extends Application {
       vec3.sub(acc, acc, forward);
     }
     if (this.keys["KeyD"]) {
-      vec3.add(acc, acc, right);
+      vec3.sub(c.rotation, c.rotation, vec3.set(vec3.create(), 0, 0.02, 0));
     }
     if (this.keys["KeyA"]) {
-      vec3.sub(acc, acc, right);
+      vec3.add(c.rotation, c.rotation, vec3.set(vec3.create(), 0, 0.02, 0));
     }
 
     // 2: update velocity
     vec3.scaleAndAdd(c.velocity, c.velocity, acc, dt * c.acceleration);
 
     // 3: if no movement, apply friction
-    if (
-      !this.keys["KeyW"] &&
-      !this.keys["KeyS"] &&
-      !this.keys["KeyD"] &&
-      !this.keys["KeyA"]
-    ) {
-      vec3.scale(c.velocity, c.velocity, 1 - c.friction);
-    }
+    vec3.scale(c.velocity, c.velocity, 1 - c.friction);
 
     // 4: limit speed
     const len = vec3.len(c.velocity);

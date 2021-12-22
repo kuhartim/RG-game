@@ -33,9 +33,16 @@ export class Node {
   }
 
   updateTransform() {
-    mat4.getRotation(this.rotation, this.matrix);
-    mat4.getTranslation(this.translation, this.matrix);
-    mat4.getScaling(this.scale, this.matrix);
+    // mat4.getRotation(this.rotation, this.matrix);
+    // mat4.getTranslation(this.translation, this.matrix);
+    // mat4.getScaling(this.scale, this.matrix);
+
+    const t = this.translation;
+    const degrees = this.rotation.map(x => x * 180 / Math.PI);
+    const q = quat.fromEuler(quat.create(), ...degrees);
+    const v = vec3.clone(this.translation);
+    const s = vec3.clone(this.scale);
+    mat4.fromRotationTranslationScale(t, q, v ,s);
   }
 
   getGlobalTransform() {
@@ -48,12 +55,18 @@ export class Node {
   }
 
   updateMatrix() {
-    mat4.fromRotationTranslationScale(
-      this.matrix,
-      this.rotation,
-      this.translation,
-      this.scale
-    );
+    // mat4.fromRotationTranslationScale(
+    //   this.matrix,
+    //   this.rotation,
+    //   this.translation,
+    //   this.scale
+    // );
+
+    const m = this.matrix;
+    mat4.identity(m);
+    mat4.translate(m, m, this.translation);
+    mat4.rotateY(m, m, this.rotation[1]);
+    mat4.rotateX(m, m, this.rotation[0]);
   }
 
   addChild(node) {
