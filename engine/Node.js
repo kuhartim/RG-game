@@ -38,11 +38,12 @@ export class Node {
     // mat4.getScaling(this.scale, this.matrix);
 
     const t = this.translation;
+    const m = this.matrix;
     const degrees = this.rotation.map(x => x * 180 / Math.PI);
     const q = quat.fromEuler(quat.create(), ...degrees);
     const v = vec3.clone(this.translation);
     const s = vec3.clone(this.scale);
-    mat4.fromRotationTranslationScale(t, q, v ,s);
+    mat4.fromRotationTranslationScale(m, q, v ,s);
   }
 
   getGlobalTransform() {

@@ -3,14 +3,62 @@ import { vec3, mat4 } from "./lib/gl-matrix-module.js";
 export class Physics {
   constructor(scene) {
     this.scene = scene;
+
+    this.keydownHandler = this.keydownHandler.bind(this);
+    this.keyupHandler = this.keyupHandler.bind(this);
+    this.keys = {};
+
+    this.enable();
+  }
+
+  moveCar(car, dt) {
+    //car
+    if (!car) return;
+
+    const c = car;
+
+    const forward = vec3.set(
+      vec3.create(),
+      -Math.sin(c.rotation[1]),
+      0,
+      -Math.cos(c.rotation[1])
+    );
+
+    // 1: add movement acceleration
+    let acc = vec3.create();
+    if (this.keys["KeyW"]) {
+      vec3.add(acc, acc, forward);
+    }
+    if (this.keys["KeyS"]) {
+      vec3.sub(acc, acc, forward);
+    }
+    if (this.keys["KeyD"]) {
+      vec3.sub(c.rotation, c.rotation, vec3.set(vec3.create(), 0, 0.01, 0));
+    }
+    if (this.keys["KeyA"]) {
+      vec3.add(c.rotation, c.rotation, vec3.set(vec3.create(), 0, 0.01, 0));
+    }
+
+    // 2: update velocity
+    vec3.scaleAndAdd(c.velocity, c.velocity, acc, dt * c.acceleration);
+
+    // 3: if no movement, apply friction
+    if(!this.keys["KeyW"] && !this.keys["keyS"]){
+      vec3.scale(c.velocity, c.velocity, 1 - c.friction);
+    }
+
+    // 4: limit speed
+    const len = vec3.len(c.velocity);
+    if (len > c.maxSpeed) {
+      vec3.scale(c.velocity, c.velocity, c.maxSpeed / len);
+    }
   }
 
   update(dt) {
     this.scene.traverse((node) => {
       if (node.velocity) {
-        //node.updateTransform();
         vec3.scaleAndAdd(node.translation, node.translation, node.velocity, dt);
-        console.log(1, node.translation);
+        node.updateTransform();
         this.scene.traverse((other) => {
           if (node !== other) {
             //this.resolveCollision(node, other);
@@ -110,5 +158,30 @@ export class Physics {
 
     vec3.add(a.translation, a.translation, minDirection);
     a.updateTransform();
+  }
+
+  
+  keydownHandler(e) {
+    this.keys[e.code] = true;
+  }
+
+  keyupHandler(e) {
+    this.keys[e.code] = false;
+  }
+
+  enable() {
+    document.addEventListener("mousemove", this.mousemoveHandler);
+    document.addEventListener("keydown", this.keydownHandler);
+    document.addEventListener("keyup", this.keyupHandler);
+  }
+
+  disable() {
+    document.removeEventListener("mousemove", this.mousemoveHandler);
+    document.removeEventListener("keydown", this.keydownHandler);
+    document.removeEventListener("keyup", this.keyupHandler);
+
+    for (let key in this.keys) {
+      this.keys[key] = false;
+    }
   }
 }
