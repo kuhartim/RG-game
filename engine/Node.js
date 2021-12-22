@@ -37,7 +37,6 @@ export class Node {
     // mat4.getTranslation(this.translation, this.matrix);
     // mat4.getScaling(this.scale, this.matrix);
 
-    const t = this.translation;
     const m = this.matrix;
     const degrees = this.rotation.map(x => x * 180 / Math.PI);
     const q = quat.fromEuler(quat.create(), ...degrees);

@@ -43,8 +43,9 @@ export class Physics {
     vec3.scaleAndAdd(c.velocity, c.velocity, acc, dt * c.acceleration);
 
     // 3: if no movement, apply friction
-    if(!this.keys["KeyW"] && !this.keys["keyS"]){
+    if(!this.keys["KeyW"] && !this.keys["KeyS"]){
       vec3.scale(c.velocity, c.velocity, 1 - c.friction);
+      console.log("test")
     }
 
     // 4: limit speed
