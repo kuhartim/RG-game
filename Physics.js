@@ -43,9 +43,9 @@ export class Physics {
     vec3.scaleAndAdd(c.velocity, c.velocity, acc, dt * c.acceleration);
 
     // 3: if no movement, apply friction
-    if(!this.keys["KeyW"] && !this.keys["KeyS"]){
+    if (!this.keys["KeyW"] && !this.keys["KeyS"]) {
       vec3.scale(c.velocity, c.velocity, 1 - c.friction);
-      console.log("test")
+      console.log("test");
     }
 
     // 4: limit speed
@@ -59,13 +59,13 @@ export class Physics {
     this.scene.traverse((node) => {
       if (node.velocity) {
         vec3.scaleAndAdd(node.translation, node.translation, node.velocity, dt);
-        node.updateTransform();
         this.scene.traverse((other) => {
           if (node !== other) {
             //this.resolveCollision(node, other);
           }
         });
         node.updateMatrix();
+        // node.updateTransform();
       }
     });
   }
@@ -161,7 +161,6 @@ export class Physics {
     a.updateTransform();
   }
 
-  
   keydownHandler(e) {
     this.keys[e.code] = true;
   }
