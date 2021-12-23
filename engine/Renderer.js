@@ -185,15 +185,16 @@ export class Renderer {
     gl.uniform1i(program.uniforms.uTexture, 0);
 
     const mvpMatrix = this.getViewProjectionMatrix(camera);
-    const childrens = [];
+    // const childrens = [];
     for (const node of scene.nodes) {
-      childrens.push(...node.children);
+      // childrens.push(...node.children);
+      this.renderNode(node, mvpMatrix);
     }
-    for (const node of scene.nodes) {
-      if (!childrens.find((element) => element === node)) {
-        this.renderNode(node, mvpMatrix);
-      }
-    }
+    // for (const node of scene.nodes) {
+    //   if (!childrens.find((element) => element === node)) {
+    //     this.renderNode(node, mvpMatrix);
+    //   }
+    // }
   }
 
   renderNode(node, mvpMatrix) {

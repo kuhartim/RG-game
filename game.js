@@ -4,6 +4,7 @@ import { GLTFLoader } from "./engine/GLTFLoader.js";
 import { Renderer } from "./engine/Renderer.js";
 
 import { Physics } from "./Physics.js";
+import { Physics2 } from "./Physics2.js";
 
 import { vec3, mat4 } from "./lib/gl-matrix-module.js";
 
@@ -21,8 +22,6 @@ class App extends Application {
     this.aspect = 1;
 
     this.load("./models/car/car.gltf");
-
-
   }
 
   async load(uri) {
@@ -33,6 +32,16 @@ class App extends Application {
     this.physics = new Physics(this.scene);
 
     this.car = await this.loader.loadNode("car");
+    this.plane = await this.loader.loadNode("Plane");
+
+    let wheels = [
+      await this.loader.loadNode("sp_desna"),
+      await this.loader.loadNode("sp_leva"),
+      await this.loader.loadNode("z_desna"),
+      await this.loader.loadNode("z_leva"),
+    ];
+
+    this.ph2 = new Physics2(this.plane, this.car, wheels);
 
     this.loader.setNode("car", carDefaults);
 
@@ -54,9 +63,14 @@ class App extends Application {
     const dt = (this.time - this.startTime) * 0.001;
     this.startTime = this.time;
 
-    if (this.physics) {
-      this.physics.moveCar(this.car, dt)
-      this.physics.update(dt);
+    // if (this.physics) {
+    //   this.physics.moveCar(this.car, dt);
+    //   this.physics.update(dt);
+    // }
+
+    if (this.ph2) {
+      this.ph2.updatePhysics(dt, this.car);
+      this.ph2.updateScene(this.scene);
     }
   }
 
@@ -76,7 +90,6 @@ class App extends Application {
       this.camera.camera.updateMatrix();
     }
   }
-
 }
 
 document.addEventListener("DOMContentLoaded", () => {
