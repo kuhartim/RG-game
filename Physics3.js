@@ -2,9 +2,9 @@ import { vec3, mat4 } from "./lib/gl-matrix-module.js";
 import { Car } from "./Car.js";
 
 export class Physics3 {
-  constructor(scene, car) {
+  constructor(scene, car, wheels) {
     this.scene = scene;
-    this.car = new Car(car);
+    this.car = new Car(car, wheels);
     this.carNode = car;
 
     this.keydownHandler = this.keydownHandler.bind(this);

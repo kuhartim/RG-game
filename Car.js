@@ -3,8 +3,9 @@ import { Box, Utils } from "./geometry/index.js";
 import { vec2, vec3 } from "./lib/gl-matrix-module.js";
 
 export class Car {
-  constructor(car) {
+  constructor(car, wheels) {
     this.car = car;
+    this.wheels = wheels;
     this.origin = vec2.set(vec2.create(), 0, 0);
 
     this.width = 20;
@@ -12,11 +13,13 @@ export class Car {
     this.heading = 0;
     this.maxVelocity = 1;
 
+    this.wheelRotation = 0;
+
     this.velocity = 0;
     this.steerAngle = 0;
     this.acceleration = 0;
     this.accelerationFactor = 5;
-    this.maxSteering = Math.PI / 6;
+    this.maxSteering = Math.PI / 4;
     this.wheelBase = this.length / 4;
     this.maxAcceleration = this.maxVelocity / 4;
     this.freeDeceleration = this.maxVelocity / 4;
@@ -63,7 +66,6 @@ export class Car {
   goForward(dt) {
     if (this.velocity < 0) {
       this.acceleration = this.brakeDeceleration;
-      console.log("Brake");
     } else {
       this.acceleration += this.accelerationFactor * dt;
       this.acceleration = Utils.clamp(
@@ -144,8 +146,11 @@ export class Car {
   }
 
   turnLeft(dt) {
+    if (this.steerAngle > 0) {
+      dt *= 2;
+    }
     const angle = Utils.clamp(
-      this.steerAngle - this.maxSteering * dt,
+      this.steerAngle - this.maxSteering * dt * 2,
       -this.maxSteering,
       this.maxSteering
     );
@@ -154,8 +159,11 @@ export class Car {
   }
 
   turnRight(dt) {
+    if (this.steerAngle < 0) {
+      dt *= 2;
+    }
     const angle = Utils.clamp(
-      this.steerAngle + this.maxSteering * dt,
+      this.steerAngle + this.maxSteering * dt * 2,
       -this.maxSteering,
       this.maxSteering
     );
@@ -164,9 +172,9 @@ export class Car {
   }
 
   updateRotation(dt) {
-    if (this.steerAngle > 0) {
+    if (this.steerAngle > 0.1) {
       this.turnLeft(dt * 2);
-    } else if (this.steerAngle < 0) {
+    } else if (this.steerAngle < -0.1) {
       this.turnRight(dt * 2);
     } else {
       this.rotate(0);
@@ -180,6 +188,8 @@ export class Car {
       -this.maxVelocity,
       this.maxVelocity
     );
+
+    this.wheelRotation += this.velocity;
 
     // this.velocity2 = vec3.set(vec3.create(), 0, 0, -this.velocity);
 
@@ -195,7 +205,28 @@ export class Car {
     );
     vec3.copy(this.car.rotation, vec3.set(vec3.create(), 0, -this.heading, 0));
 
+    vec3.copy(
+      this.wheels[0].rotation,
+      vec3.set(vec3.create(), -this.wheelRotation, -this.steerAngle, 0)
+    );
+    vec3.copy(
+      this.wheels[1].rotation,
+      vec3.set(vec3.create(), -this.wheelRotation, -this.steerAngle, 0)
+    );
+
+    vec3.copy(
+      this.wheels[2].rotation,
+      vec3.set(vec3.create(), -this.wheelRotation, 0, 0)
+    );
+    vec3.copy(
+      this.wheels[3].rotation,
+      vec3.set(vec3.create(), -this.wheelRotation, 0, 0)
+    );
+
     this.car.updateMatrix();
+    for (const wheel of this.wheels) {
+      wheel.updateMatrix();
+    }
 
     //this.rotate(this.steerAngle);
   }

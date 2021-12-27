@@ -27,8 +27,14 @@ class App extends Application {
 
     this.car = await this.loader.loadNode("car");
     // this.plane = await this.loader.loadNode("Plane");
+    const wheels = [
+      await this.loader.loadNode("sp_leva"),
+      await this.loader.loadNode("sp_desna"),
+      await this.loader.loadNode("z_leva"),
+      await this.loader.loadNode("z_desna"),
+    ];
 
-    this.ph3 = new Physics3(this.scene, this.car);
+    this.ph3 = new Physics3(this.scene, this.car, wheels);
 
     // let wheels = [
     //   await this.loader.loadNode("sp_desna"),
