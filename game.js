@@ -5,15 +5,9 @@ import { Renderer } from "./engine/Renderer.js";
 
 import { Physics } from "./Physics.js";
 import { Physics2 } from "./Physics2.js";
+import { Physics3 } from "./Physics3.js";
 
 import { vec3, mat4 } from "./lib/gl-matrix-module.js";
-
-const carDefaults = {
-  velocity: [0, 0, 0],
-  maxSpeed: 20,
-  friction: 0.1,
-  acceleration: 20,
-};
 
 class App extends Application {
   start() {
@@ -29,21 +23,23 @@ class App extends Application {
     await this.loader.load(uri);
     this.scene = await this.loader.loadScene(this.loader.defaultScene);
     this.camera = await this.loader.loadNode("Camera");
-    this.physics = new Physics(this.scene);
+    // this.physics = new Physics(this.scene);
 
     this.car = await this.loader.loadNode("car");
-    this.plane = await this.loader.loadNode("Plane");
+    // this.plane = await this.loader.loadNode("Plane");
 
-    let wheels = [
-      await this.loader.loadNode("sp_desna"),
-      await this.loader.loadNode("sp_leva"),
-      await this.loader.loadNode("z_desna"),
-      await this.loader.loadNode("z_leva"),
-    ];
+    this.ph3 = new Physics3(this.scene, this.car);
 
-    this.ph2 = new Physics2(this.plane, wheels);
+    // let wheels = [
+    //   await this.loader.loadNode("sp_desna"),
+    //   await this.loader.loadNode("sp_leva"),
+    //   await this.loader.loadNode("z_desna"),
+    //   await this.loader.loadNode("z_leva"),
+    // ];
 
-    this.loader.setNode("car", carDefaults);
+    // this.ph2 = new Physics2(this.plane, wheels);
+
+    //this.loader.setNode("car", carDefaults);
 
     if (!this.scene || !this.camera) {
       throw new Error("Scene or Camera not present in glTF");
@@ -58,15 +54,20 @@ class App extends Application {
     this.resize();
   }
 
-  update() {
+  async update() {
     const t = (this.time = Date.now());
     const dt = (this.time - this.startTime) * 0.001;
     this.startTime = this.time;
 
-    if (this.physics) {
-      this.physics.moveCar(this.car, dt);
-      this.physics.update(dt);
+    if (this.ph3) {
+      this.ph3.moveCar(dt);
+      this.ph3.update(dt);
     }
+
+    // if (this.physics) {
+    //   this.physics.moveCar(this.car, dt);
+    //   this.physics.update(dt);
+    // }
 
     // if (this.ph2) {
     //   this.ph2.updatePhysics(dt, this.car, this.plane);
