@@ -1,7 +1,7 @@
 import { vec3, mat4, quat } from "./lib/gl-matrix-module.js";
 
 export class Physics2 {
-  constructor(plane, car, wheels) {
+  constructor(plane, wheels) {
     /**
      * Physics
      **/
@@ -150,19 +150,14 @@ export class Physics2 {
       }.bind(this)
     );
     // var q = plane.quaternion;
-    var planeBody = new CANNON.Body({
+    this.planeBody = new CANNON.Body({
       mass: 0, // mass = 0 makes the body static
       material: groundMaterial,
       shape: new CANNON.Plane(),
-      quaternion: new CANNON.Quaternion(
-        -Math.PI / 3,
-        plane.rotation[1],
-        plane.rotation[2],
-        plane.rotation[3]
-      ),
+      quaternion: new CANNON.Quaternion(-Math.PI / 2, 0, 0, 1),
     });
-    console.log(planeBody);
-    this.world.add(planeBody);
+    console.log(this.planeBody);
+    this.world.add(this.planeBody);
 
     /**
      * Main
@@ -170,7 +165,7 @@ export class Physics2 {
     this.enable();
   }
 
-  updatePhysics(dt, car) {
+  updatePhysics(dt, car, plane) {
     if (this.world) this.world.step(dt);
     // update the chassis position
     vec3.set(
@@ -188,6 +183,22 @@ export class Physics2 {
       this.chassisBody.quaternion.z,
       this.chassisBody.quaternion.w
     );
+
+    // vec3.set(
+    //   plane.translation,
+
+    //   this.planeBody.position.x,
+    //   this.planeBody.position.y,
+    //   this.planeBody.position.z
+    // );
+
+    // quat.set(
+    //   plane.rotation,
+    //   this.planeBody.quaternion.x,
+    //   this.planeBody.quaternion.y,
+    //   this.planeBody.quaternion.z,
+    //   this.planeBody.quaternion.w
+    // );
 
     // console.log(
     //   this.chassisBody.position.x,

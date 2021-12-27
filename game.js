@@ -41,7 +41,7 @@ class App extends Application {
       await this.loader.loadNode("z_leva"),
     ];
 
-    this.ph2 = new Physics2(this.plane, this.car, wheels);
+    this.ph2 = new Physics2(this.plane, wheels);
 
     this.loader.setNode("car", carDefaults);
 
@@ -63,15 +63,15 @@ class App extends Application {
     const dt = (this.time - this.startTime) * 0.001;
     this.startTime = this.time;
 
-    // if (this.physics) {
-    //   this.physics.moveCar(this.car, dt);
-    //   this.physics.update(dt);
-    // }
-
-    if (this.ph2) {
-      this.ph2.updatePhysics(dt, this.car);
-      this.ph2.updateScene(this.scene);
+    if (this.physics) {
+      this.physics.moveCar(this.car, dt);
+      this.physics.update(dt);
     }
+
+    // if (this.ph2) {
+    //   this.ph2.updatePhysics(dt, this.car, this.plane);
+    //   this.ph2.updateScene(this.scene);
+    // }
   }
 
   render() {
