@@ -26,6 +26,8 @@ class App extends Application {
     // this.physics = new Physics(this.scene);
 
     this.car = await this.loader.loadNode("car");
+
+    console.log(this.car);
     // this.plane = await this.loader.loadNode("Plane");
     const wheels = [
       await this.loader.loadNode("sp_leva"),

@@ -1,4 +1,4 @@
-// import { vec3, mat4 } from "../lib/gl-matrix-module.js";
+import { vec3, mat4 } from "../../lib/gl-matrix-module.js";
 import { Car } from "./Car.js";
 
 export class Physics3 {
@@ -39,6 +39,7 @@ export class Physics3 {
 
   keydownHandler(e) {
     this.keys[e.code] = true;
+    console.log(this.checkCollision(this.car.car, this.car.car));
   }
 
   keyupHandler(e) {
@@ -46,18 +47,34 @@ export class Physics3 {
   }
 
   enable() {
-    document.addEventListener("mousemove", this.mousemoveHandler);
+    // document.addEventListener("mousemove", this.mousemoveHandler);
     document.addEventListener("keydown", this.keydownHandler);
     document.addEventListener("keyup", this.keyupHandler);
   }
 
   disable() {
-    document.removeEventListener("mousemove", this.mousemoveHandler);
+    // document.removeEventListener("mousemove", this.mousemoveHandler);
     document.removeEventListener("keydown", this.keydownHandler);
     document.removeEventListener("keyup", this.keyupHandler);
 
     for (let key in this.keys) {
       this.keys[key] = false;
     }
+  }
+
+  checkCollision(node1, node2) {
+    if (!node1.min || !node1.max || !node2.min || !node2.max) return false;
+
+    const node1_coordinates = [
+      vec3.add(vec3.create(), node1.translation, node1.min),
+      vec3.add(vec3.create(), node1.translation, node1.max),
+    ];
+
+    const node2_coordinates = [
+      vec3.add(vec3.create(), node1.translation, node1.min),
+      vec3.add(vec3.create(), node1.translation, node1.max),
+    ];
+
+    return node1_coordinates;
   }
 }

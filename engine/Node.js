@@ -30,6 +30,19 @@ export class Node {
       child.parent = this;
     }
     this.parent = null;
+
+    if (
+      this.mesh &&
+      this.mesh.primitives &&
+      this.mesh.primitives[0] &&
+      this.mesh.primitives[0].attributes &&
+      this.mesh.primitives[0].attributes.POSITION
+    ) {
+      this.min =
+        vec3.clone(this.mesh.primitives[0].attributes.POSITION.min) || null;
+      this.max =
+        vec3.clone(this.mesh.primitives[0].attributes.POSITION.max) || null;
+    }
   }
 
   updateTransform() {
