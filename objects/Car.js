@@ -1,6 +1,6 @@
-import { Box, Utils } from "./geometry/index.js";
+import { Utils } from "./geometry/index.js";
 
-import { vec2, vec3 } from "./lib/gl-matrix-module.js";
+import { vec2, vec3 } from "../lib/gl-matrix-module.js";
 
 export class Car {
   constructor(car, wheels) {

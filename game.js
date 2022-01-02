@@ -3,9 +3,9 @@ import { Application } from "./engine/Application.js";
 import { GLTFLoader } from "./engine/GLTFLoader.js";
 import { Renderer } from "./engine/Renderer.js";
 
-import { Physics } from "./Physics.js";
-import { Physics2 } from "./Physics2.js";
-import { Physics3 } from "./Physics3.js";
+// import { Physics } from "./Physics.js";
+// import { Physics2 } from "./Physics2.js";
+import { Physics3 } from "./objects/Physics3.js";
 
 import { vec3, mat4 } from "./lib/gl-matrix-module.js";
 
