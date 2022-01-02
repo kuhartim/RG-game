@@ -15,7 +15,7 @@ class App extends Application {
     this.startTime = this.time;
     this.aspect = 1;
 
-    this.load("./models/car/car.gltf");
+    this.load("./models/car_final/car.gltf");
   }
 
   async load(uri) {
@@ -78,6 +78,16 @@ class App extends Application {
     // if (this.ph2) {
     //   this.ph2.updatePhysics(dt, this.car, this.plane);
     //   this.ph2.updateScene(this.scene);
+    // }
+
+    // if (this.camera) {
+    //   vec3.add(
+    //     this.camera.rotation,
+    //     this.camera.rotation,
+    //     vec3.fromValues(0, 0.01, 0)
+    //   );
+
+    //   this.camera.updateMatrix();
     // }
   }
 

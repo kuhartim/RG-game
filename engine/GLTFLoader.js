@@ -294,6 +294,10 @@ export class GLTFLoader {
       return this.cache.get(gltfSpec);
     }
 
+    if (!gltfSpec) {
+      console.log(nameOrIndex);
+    }
+
     let options = { ...gltfSpec, children: [] };
     if (gltfSpec.children) {
       for (const nodeIndex of gltfSpec.children) {

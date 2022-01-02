@@ -6,11 +6,15 @@ export class Car {
   constructor(car, wheels) {
     this.car = car;
     this.wheels = wheels;
-    this.origin = vec2.set(vec2.create(), 0, 0);
+    this.origin = vec2.set(
+      vec2.create(),
+      car.translation[2],
+      car.translation[0]
+    );
 
     this.width = 20;
     this.length = this.width * 2;
-    this.heading = 0;
+    this.heading = 3.14;
     this.maxVelocity = 1;
 
     this.wheelRotation = 0;
@@ -18,8 +22,7 @@ export class Car {
     this.velocity = 0;
     this.steerAngle = 0;
     this.acceleration = 0;
-    this.accelerationFactor = 5;
-    this.maxSteering = Math.PI / 4;
+    this.maxSteering = Math.PI / 8;
     this.wheelBase = this.length / 4;
     this.maxAcceleration = this.maxVelocity / 4;
     this.freeDeceleration = this.maxVelocity / 4;
@@ -54,7 +57,7 @@ export class Car {
     if (this.velocity > 0) {
       this.acceleration = -this.brakeDeceleration;
     } else {
-      this.acceleration -= this.accelerationFactor * dt;
+      this.acceleration -= dt;
       this.acceleration = Utils.clamp(
         this.acceleration,
         -this.maxAcceleration,
@@ -67,7 +70,7 @@ export class Car {
     if (this.velocity < 0) {
       this.acceleration = this.brakeDeceleration;
     } else {
-      this.acceleration += this.accelerationFactor * dt;
+      this.acceleration += dt;
       this.acceleration = Utils.clamp(
         this.acceleration,
         -this.maxAcceleration,
@@ -201,26 +204,34 @@ export class Car {
 
     vec3.copy(
       this.car.translation,
-      vec3.set(vec3.create(), this.origin[1], 0, -this.origin[0])
+      vec3.set(
+        vec3.create(),
+        this.origin[1],
+        this.car.translation[1],
+        -this.origin[0]
+      )
     );
-    vec3.copy(this.car.rotation, vec3.set(vec3.create(), 0, -this.heading, 0));
+    vec3.copy(
+      this.car.rotation,
+      vec3.set(vec3.create(), 0, -this.heading + 3.14, 0)
+    );
 
     vec3.copy(
       this.wheels[0].rotation,
-      vec3.set(vec3.create(), -this.wheelRotation, -this.steerAngle, 0)
+      vec3.set(vec3.create(), this.wheelRotation, -this.steerAngle, 0)
     );
     vec3.copy(
       this.wheels[1].rotation,
-      vec3.set(vec3.create(), -this.wheelRotation, -this.steerAngle, 0)
+      vec3.set(vec3.create(), this.wheelRotation, -this.steerAngle, 0)
     );
 
     vec3.copy(
       this.wheels[2].rotation,
-      vec3.set(vec3.create(), -this.wheelRotation, 0, 0)
+      vec3.set(vec3.create(), this.wheelRotation, 0, 0)
     );
     vec3.copy(
       this.wheels[3].rotation,
-      vec3.set(vec3.create(), -this.wheelRotation, 0, 0)
+      vec3.set(vec3.create(), this.wheelRotation, 0, 0)
     );
 
     this.car.updateMatrix();
