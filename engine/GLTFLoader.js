@@ -296,6 +296,7 @@ export class GLTFLoader {
 
     if (!gltfSpec) {
       console.log(nameOrIndex);
+      return null;
     }
 
     let options = { ...gltfSpec, children: [] };

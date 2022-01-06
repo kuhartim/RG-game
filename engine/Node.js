@@ -19,6 +19,10 @@ export class Node {
       this.updateMatrix();
     }
 
+    //zbris
+    this.acc = vec3.fromValues(0, 0, 0);
+    this.velocity = vec3.fromValues(1, 0, 0);
+
     this.transform = mat4.create();
     this.updateTransform();
 
@@ -38,10 +42,25 @@ export class Node {
       this.mesh.primitives[0].attributes &&
       this.mesh.primitives[0].attributes.POSITION
     ) {
-      this.min =
+      const point1 =
         vec3.clone(this.mesh.primitives[0].attributes.POSITION.min) || null;
-      this.max =
+      const point2 =
         vec3.clone(this.mesh.primitives[0].attributes.POSITION.max) || null;
+
+      if (point1 && point2) {
+        const minX = Math.min(point1[0], point2[0]);
+        const minY = Math.min(point1[2], point2[2]);
+
+        const maxX = Math.max(point1[0], point2[0]);
+        const maxY = Math.max(point1[2], point2[2]);
+
+        console.log(minX, maxX);
+
+        this.point1 = vec3.fromValues(minX, 0, minY);
+        this.point4 = vec3.fromValues(maxX, 0, maxY);
+        this.point2 = vec3.fromValues(minX, 0, maxY);
+        this.point3 = vec3.fromValues(maxX, 0, minY);
+      }
     }
   }
 

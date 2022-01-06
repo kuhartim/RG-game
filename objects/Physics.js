@@ -55,19 +55,22 @@ export class Physics {
     }
   }
 
-  update(dt) {
-    this.scene.traverse((node) => {
-      if (node.velocity) {
-        vec3.scaleAndAdd(node.translation, node.translation, node.velocity, dt);
-        this.scene.traverse((other) => {
-          if (node !== other) {
-            //this.resolveCollision(node, other);
-          }
-        });
-        node.updateMatrix();
-        // node.updateTransform();
-      }
-    });
+  update(dt, car) {
+    // vec3.scaleAndAdd(car.translation, car.translation, car.velocity, dt);
+    vec3.scale(car.velocity, car.velocity, dt);
+    vec3.add(car.translation, car.translation, car.velocity);
+    car.updateMatrix();
+    // this.scene.traverse((node) => {
+    //   vec3.scaleAndAdd(node.translation, node.translation, node.velocity, dt);
+    //   // this.scene.traverse((other) => {
+    //   //   if (node !== other) {
+    //   //     //this.resolveCollision(node, other);
+    //   //   }
+    //   //   node.updateMatrix();
+    //   //   // node.updateTransform();
+    //   // });
+    //   // node.updateMatrix();
+    // });
   }
 
   intervalIntersection(min1, max1, min2, max2) {

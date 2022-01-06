@@ -51,7 +51,12 @@ export class Renderer {
       return this.glObjects.get(image);
     }
 
-    const glTexture = WebGL.createTexture(this.gl, { image });
+    const glTexture = WebGL.createTexture(this.gl, {
+      image,
+      mip: true,
+      min: this.gl.NEAREST_MIPMAP_NEAREST,
+      mag: this.gl.NEAREST,
+    });
     this.glObjects.set(image, glTexture);
     return glTexture;
   }

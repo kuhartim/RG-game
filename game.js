@@ -15,7 +15,7 @@ class App extends Application {
     this.startTime = this.time;
     this.aspect = 1;
 
-    this.load("./models/car_final/car.gltf");
+    this.load("./models/car_square/car.gltf");
   }
 
   async load(uri) {
@@ -36,7 +36,14 @@ class App extends Application {
       await this.loader.loadNode("z_desna"),
     ];
 
-    this.ph3 = new Physics3(this.scene, this.car, wheels);
+    const fences = [];
+
+    for (let i = 1; i < 25; i++) {
+      const fence = await this.loader.loadNode(`wall${i}`);
+      if (fence) fences.push(fence);
+    }
+
+    this.ph3 = new Physics3(this.scene, this.car, wheels, fences);
 
     // let wheels = [
     //   await this.loader.loadNode("sp_desna"),
