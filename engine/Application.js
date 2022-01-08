@@ -4,7 +4,11 @@ export class Application {
 
     this.canvas = canvas;
     this._initGL(glOptions);
-    this.start();
+    this._start();
+  }
+
+  async _start() {
+    await this.start();
 
     requestAnimationFrame(this._update);
   }
@@ -44,7 +48,7 @@ export class Application {
     }
   }
 
-  start() {
+  async start() {
     // initialization code (including event handler binding)
   }
 

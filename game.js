@@ -9,13 +9,17 @@ import { Physics3 } from "./objects/Physics3.js";
 
 import { vec3, mat4 } from "./lib/gl-matrix-module.js";
 
+const timerElement = document.querySelector("#time");
+const lapElement = document.querySelector("#lap");
+const chekpointElement = document.querySelector("#checkpoint");
+
 class App extends Application {
-  start() {
+  async start() {
     this.time = Date.now();
     this.startTime = this.time;
     this.aspect = 1;
 
-    this.load("./models/car_square/car.gltf");
+    await this.load("./models/car_square/car.gltf");
   }
 
   async load(uri) {
@@ -27,7 +31,6 @@ class App extends Application {
 
     this.car = await this.loader.loadNode("car");
 
-    console.log(this.car);
     // this.plane = await this.loader.loadNode("Plane");
     const wheels = [
       await this.loader.loadNode("sp_leva"),
@@ -56,6 +59,20 @@ class App extends Application {
 
     //this.loader.setNode("car", carDefaults);
 
+    this.checkpoints = [];
+
+    for (let i = 0; i < 5; i++) {
+      const checkpoint = await this.loader.loadNode(`checkpoint${i}`);
+      if (checkpoint) this.checkpoints.push(checkpoint);
+    }
+
+    this.stage = 0;
+    this.laps = 0;
+
+    this.timer = 0;
+    this.timerSeconds = 0;
+    this.timerActive = false;
+
     if (!this.scene || !this.camera) {
       throw new Error("Scene or Camera not present in glTF");
     }
@@ -67,9 +84,11 @@ class App extends Application {
     this.renderer = new Renderer(this.gl);
     this.renderer.prepareScene(this.scene);
     this.resize();
+
+    this.startTimer();
   }
 
-  async update() {
+  update() {
     const t = (this.time = Date.now());
     const dt = (this.time - this.startTime) * 0.001;
     this.startTime = this.time;
@@ -78,6 +97,9 @@ class App extends Application {
       this.ph3.moveCar(dt);
       this.ph3.update(dt);
     }
+
+    this.checkStage();
+    this.updateTimer(dt);
 
     // if (this.physics) {
     //   this.physics.moveCar(this.car, dt);
@@ -115,6 +137,34 @@ class App extends Application {
       this.camera.camera.aspect = aspectRatio;
       this.camera.camera.updateMatrix();
     }
+  }
+
+  checkStage() {
+    if (!this.ph3) return;
+    if (this.ph3.checkCollision(this.car, this.checkpoints[this.stage])) {
+      this.stage++;
+      if (this.stage == this.checkpoints.length) {
+        this.stage = 0;
+        this.laps++;
+        lapElement.innerHTML = this.laps + " laps";
+      }
+      chekpointElement.innerHTML = this.stage + " checkpoints";
+    }
+  }
+
+  startTimer() {
+    this.timerActive = true;
+  }
+
+  stopTimer() {
+    this.timerActive = false;
+  }
+
+  updateTimer(dt) {
+    if (!this.timerActive) return;
+    this.timer += dt;
+    this.timerSeconds = parseInt(this.timer);
+    timerElement.innerHTML = this.timerSeconds + "s";
   }
 }
 
