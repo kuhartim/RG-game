@@ -54,8 +54,6 @@ export class Node {
         const maxX = Math.max(point1[0], point2[0]);
         const maxY = Math.max(point1[2], point2[2]);
 
-        console.log(minX, maxX);
-
         this.point1 = vec3.fromValues(minX, 0, minY);
         this.point4 = vec3.fromValues(maxX, 0, maxY);
         this.point2 = vec3.fromValues(minX, 0, maxY);

@@ -16,8 +16,6 @@ export class Physics3 {
 
     this.enable();
 
-    console.log(car.point1, car.point2, car.point3, car.point4);
-
     // for (let i = 0; i < this.fences.length; i++) {
     //   if (this.checkCollision(this.car.car, this.fences[i])) {
     //     console.log("collision", i);
@@ -61,7 +59,6 @@ export class Physics3 {
 
     for (let i = 0; i < this.fences.length; i++) {
       if (this.checkCollision(this.car.car, this.fences[i])) {
-        console.log("collision", i);
         this.car.collision(dt, origin);
       }
     }
