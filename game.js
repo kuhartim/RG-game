@@ -12,6 +12,7 @@ import { vec3, mat4 } from "./lib/gl-matrix-module.js";
 const timerElement = document.querySelector("#time");
 const lapElement = document.querySelector("#lap");
 const chekpointElement = document.querySelector("#checkpoint");
+const speedElement = document.querySelector("#speed");
 
 class App extends Application {
   async start() {
@@ -27,6 +28,7 @@ class App extends Application {
     await this.loader.load(uri);
     this.scene = await this.loader.loadScene(this.loader.defaultScene);
     this.camera = await this.loader.loadNode("Camera");
+    this.cameraLocation = await this.loader.loadNode("Camera_location_to_car");
     // this.physics = new Physics(this.scene);
 
     this.car = await this.loader.loadNode("car");
@@ -46,7 +48,14 @@ class App extends Application {
       if (fence) fences.push(fence);
     }
 
-    this.ph3 = new Physics3(this.scene, this.car, wheels, fences);
+    this.ph3 = new Physics3(
+      this.scene,
+      this.camera,
+      this.cameraLocation,
+      this.car,
+      wheels,
+      fences
+    );
 
     // let wheels = [
     //   await this.loader.loadNode("sp_desna"),
@@ -66,6 +75,8 @@ class App extends Application {
       if (checkpoint) this.checkpoints.push(checkpoint);
     }
 
+    this.checkpoints.push(await this.loader.loadNode("finish"));
+
     this.stage = 0;
     this.laps = 0;
 
@@ -84,8 +95,6 @@ class App extends Application {
     this.renderer = new Renderer(this.gl);
     this.renderer.prepareScene(this.scene);
     this.resize();
-
-    this.startTimer();
   }
 
   update() {
@@ -94,8 +103,9 @@ class App extends Application {
     this.startTime = this.time;
 
     if (this.ph3) {
-      this.ph3.moveCar(dt);
+      this.ph3.moveCar(dt, this.startTimer.bind(this));
       this.ph3.update(dt);
+      this.ph3.updateSpeed(speedElement);
     }
 
     this.checkStage();

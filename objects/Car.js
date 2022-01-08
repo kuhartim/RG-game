@@ -3,18 +3,29 @@ import { Utils } from "./geometry/index.js";
 import { vec2, vec3 } from "../lib/gl-matrix-module.js";
 
 export class Car {
-  constructor(car, wheels) {
+  constructor(car, wheels, camera, cameraLocation) {
     this.car = car;
+    this.carLocationBase = vec3.clone(car.translation);
     this.wheels = wheels;
+    this.camera = camera;
+    this.cameraLocation = cameraLocation;
+    this.cameraLocationBase = vec3.clone(cameraLocation.translation);
+    this.cameraFromCar = vec3.sub(
+      vec3.create(),
+      this.carLocationBase,
+      this.cameraLocationBase
+    );
+    this.prevCameraRot = 0;
     this.origin = vec2.set(
       vec2.create(),
       car.translation[2],
       car.translation[0]
     );
 
-    this.width = 20;
-    this.length = this.width * 2;
+    this.width = 11;
+    this.length = 17;
     this.heading = 0;
+    this.prevHeading = this.heading;
     this.maxVelocity = 2;
 
     this.wheelRotation = 0;
@@ -23,7 +34,7 @@ export class Car {
     this.steerAngle = 0;
     this.acceleration = 0;
     this.maxSteering = Math.PI / 8;
-    this.wheelBase = this.length / 4;
+    this.wheelBase = this.length / 1.5;
     this.maxAcceleration = this.maxVelocity / 4;
     this.freeDeceleration = this.maxVelocity / 4;
     this.brakeDeceleration = this.maxVelocity;
@@ -156,7 +167,120 @@ export class Car {
     );
     this.steerAngle = steerAngle;
 
+    this.updateCamera(heading, this.heading);
+
     this.updatePoints();
+  }
+
+  updateCamera(oldH, newH) {
+    // oldH = Number(oldH.toFixed(3));
+    // newH = Number(newH.toFixed(3));
+    // if (Math.abs(newH - oldH) > this.maxSteering) {
+    //   newH += Math.PI;
+    // }
+    // if (oldH == newH) {
+    //   if (this.camera.rotation[1] < -0.01) {
+    //     vec3.add(
+    //       this.camera.rotation,
+    //       this.camera.rotation,
+    //       vec3.fromValues(0, 0.01, 0)
+    //     );
+    //   } else if (this.camera.rotation[1] > 0.01) {
+    //     vec3.add(
+    //       this.camera.rotation,
+    //       this.camera.rotation,
+    //       vec3.fromValues(0, -0.01, 0)
+    //     );
+    //   }
+    //   if (
+    //     this.cameraLocation.translation[0] <
+    //     this.cameraLocationBase[0] - 0.5
+    //   ) {
+    //     this.prevHeading -= 0.1;
+    //     let newX1 =
+    //       this.cameraLocationBase[0] *
+    //         Math.cos(-((this.resetH || newH) - this.prevHeading) * 0.2) -
+    //       this.cameraLocationBase[2] *
+    //         Math.sin(-((this.resetH || newH) - this.prevHeading) * 0.2);
+    //     let newY1 =
+    //       this.cameraLocationBase[0] *
+    //         Math.sin(-((this.resetH || newH) - this.prevHeading) * 0.2) +
+    //       this.cameraLocationBase[2] *
+    //         Math.cos(-((this.resetH || newH) - this.prevHeading) * 0.2);
+    //     vec3.set(
+    //       this.cameraLocation.translation,
+    //       newX1,
+    //       this.cameraLocation.translation[1],
+    //       newY1
+    //     );
+    //   } else if (
+    //     this.cameraLocation.translation[0] >
+    //     this.cameraLocationBase[0] + 0.5
+    //   ) {
+    //     this.prevHeading += 0.1;
+    //     let newX1 =
+    //       this.cameraLocationBase[0] *
+    //         Math.cos(-((this.resetH || newH) - this.prevHeading) * 0.2) -
+    //       this.cameraLocationBase[2] *
+    //         Math.sin(-((this.resetH || newH) - this.prevHeading) * 0.2);
+    //     let newY1 =
+    //       this.cameraLocationBase[0] *
+    //         Math.sin(-((this.resetH || newH) - this.prevHeading) * 0.2) +
+    //       this.cameraLocationBase[2] *
+    //         Math.cos(-((this.resetH || newH) - this.prevHeading) * 0.2);
+    //     vec3.set(
+    //       this.cameraLocation.translation,
+    //       newX1,
+    //       this.cameraLocation.translation[1],
+    //       newY1
+    //     );
+    //   } else {
+    //     this.prevHeading = newH;
+    //     this.resetH = undefined;
+    //   }
+    // } else {
+    //   vec3.add(
+    //     this.camera.rotation,
+    //     this.camera.rotation,
+    //     vec3.fromValues(0, (newH - oldH) * 0.2, 0)
+    //   );
+    //   console.log(this.camera.rotation);
+    //   vec3.set(
+    //     this.camera.rotation,
+    //     this.camera.rotation[0],
+    //     Utils.clamp(this.camera.rotation[1], -Math.PI / 30, Math.PI / 30),
+    //     this.camera.rotation[2]
+    //   );
+    //   if (
+    //     !(
+    //       Math.abs(this.prevCameraRot.toFixed(4)) - 0.001 <
+    //         Math.abs(this.camera.rotation[1].toFixed(4)) &&
+    //       Math.abs(this.prevCameraRot.toFixed(4)) + 0.001 >
+    //         Math.abs(this.camera.rotation[1].toFixed(4))
+    //     )
+    //   ) {
+    //     let newX1 =
+    //       this.cameraLocationBase[0] *
+    //         Math.cos(-(newH - this.prevHeading) * 0.2) -
+    //       this.cameraLocationBase[2] *
+    //         Math.sin(-(newH - this.prevHeading) * 0.2);
+    //     let newY1 =
+    //       this.cameraLocationBase[0] *
+    //         Math.sin(-(newH - this.prevHeading) * 0.2) +
+    //       this.cameraLocationBase[2] *
+    //         Math.cos(-(newH - this.prevHeading) * 0.2);
+    //     vec3.set(
+    //       this.cameraLocation.translation,
+    //       newX1,
+    //       this.cameraLocation.translation[1],
+    //       newY1
+    //     );
+    //     this.resetH = newH;
+    //   }
+    //   this.prevCameraRot = this.camera.rotation[1];
+    // }
+    // this.camera.updateMatrix();
+    // this.cameraLocation.updateMatrix();
   }
 
   turnLeft(dt) {
@@ -186,10 +310,10 @@ export class Car {
   }
 
   collision(dt, origin) {
-    this.velocity = -this.velocity * 2;
+    this.velocity = -this.velocity * 10;
     this.origin = origin;
     this.rotate(dt);
-    this.velocity = this.velocity / 5;
+    this.velocity = this.velocity / 20;
   }
 
   updateRotation(dt) {
@@ -233,11 +357,11 @@ export class Car {
 
     vec3.copy(
       this.wheels[0].rotation,
-      vec3.set(vec3.create(), this.wheelRotation, this.steerAngle, 0)
+      vec3.set(vec3.create(), this.wheelRotation, -this.steerAngle, 0)
     );
     vec3.copy(
       this.wheels[1].rotation,
-      vec3.set(vec3.create(), this.wheelRotation, this.steerAngle, 0)
+      vec3.set(vec3.create(), this.wheelRotation, -this.steerAngle, 0)
     );
 
     vec3.copy(
