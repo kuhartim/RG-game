@@ -20,7 +20,7 @@ class App extends Application {
     this.startTime = this.time;
     this.aspect = 1;
 
-    await this.load("./models/car_square/car.gltf");
+    await this.load("./models/car_square_final/car.gltf");
   }
 
   async load(uri) {

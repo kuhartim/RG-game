@@ -39,8 +39,8 @@ export class Application {
       canvas.width !== canvas.clientWidth ||
       canvas.height !== canvas.clientHeight
     ) {
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
+      canvas.width = 2560;
+      canvas.height = 1440;
 
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
