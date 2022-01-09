@@ -14,11 +14,20 @@ const lapElement = document.querySelector("#lap");
 const chekpointElement = document.querySelector("#checkpoint");
 const speedElement = document.querySelector("#speed");
 
+const gameUIElement = document.querySelector("#game_ui");
+const gameStartElement = document.querySelector("#game_menu");
+
 class App extends Application {
   async start() {
     this.time = Date.now();
     this.startTime = this.time;
     this.aspect = 1;
+
+    this.isStart = false;
+
+    document
+      .querySelector("#start_game")
+      .addEventListener("click", () => (this.isStart = true));
 
     await this.load("./models/car_square_final/car.gltf");
   }
@@ -135,8 +144,16 @@ class App extends Application {
   }
 
   render() {
-    if (this.renderer) {
-      this.renderer.render(this.scene, this.camera);
+    if (this.isStart) {
+      if (this.renderer) {
+        this.renderer.render(this.scene, this.camera);
+      }
+
+      gameUIElement.style.display = "block";
+      gameStartElement.style.display = "none";
+    } else {
+      gameUIElement.style.display = "none";
+      gameStartElement.style.display = "flex";
     }
   }
 

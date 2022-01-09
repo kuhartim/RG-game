@@ -166,7 +166,7 @@ export class Car {
     );
     this.steerAngle = steerAngle;
 
-    this.updateCamera(heading, this.heading);
+    //this.updateCamera(heading, this.heading);
 
     this.updatePoints();
   }
