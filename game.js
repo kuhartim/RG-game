@@ -149,7 +149,7 @@ class App extends Application {
         this.renderer.render(this.scene, this.camera);
       }
 
-      gameUIElement.style.display = "block";
+      gameUIElement.style.display = "flex";
       gameStartElement.style.display = "none";
     } else {
       gameUIElement.style.display = "none";

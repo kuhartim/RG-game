@@ -24,7 +24,7 @@ export class Physics3 {
   }
 
   updateSpeed(element) {
-    element.innerHTML = `${parseInt(-this.car.velocity * 50)} km/h`;
+    element.innerHTML = `${Math.abs(parseInt(-this.car.velocity * 50))} km/h`;
   }
 
   moveCar(dt, startTimer) {
