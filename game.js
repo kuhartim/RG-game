@@ -43,7 +43,7 @@ class App extends Application {
 
     const fences = [];
 
-    for (let i = 1; i < 25; i++) {
+    for (let i = 0; i < 20; i++) {
       const fence = await this.loader.loadNode(`wall${i}`);
       if (fence) fences.push(fence);
     }
@@ -76,6 +76,8 @@ class App extends Application {
     }
 
     this.checkpoints.push(await this.loader.loadNode("finish"));
+
+    console.log(this.checkpoints[5]);
 
     this.stage = 0;
     this.laps = 0;

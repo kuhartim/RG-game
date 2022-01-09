@@ -186,26 +186,26 @@
     },
     {
       "mesh": 25,
-      "name": "checkpoint0.001",
+      "name": "checkpoint1",
       "translation": [
         -309.68927001953125, 0.9230430126190186, -100.49879455566406
       ]
     },
     {
       "mesh": 26,
-      "name": "checkpoint0.002",
+      "name": "checkpoint2",
       "translation": [
         -23.31895637512207, 0.9230430126190186, -80.59587097167969
       ]
     },
     {
       "mesh": 27,
-      "name": "checkpoint0.003",
+      "name": "checkpoint3",
       "translation": [259.1452941894531, 0.9230430126190186, 38.77031707763672]
     },
     {
       "mesh": 28,
-      "name": "checkpoint0.004",
+      "name": "checkpoint4",
       "translation": [53.4547004699707, 0.9230430126190186, 107.9605484008789]
     },
     {

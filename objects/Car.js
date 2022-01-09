@@ -15,7 +15,6 @@ export class Car {
       this.carLocationBase,
       this.cameraLocationBase
     );
-    this.prevCameraRot = 0;
     this.origin = vec2.set(
       vec2.create(),
       car.translation[2],
@@ -25,7 +24,7 @@ export class Car {
     this.width = 11;
     this.length = 17;
     this.heading = 0;
-    this.prevHeading = this.heading;
+    this.resetHeading = this.heading;
     this.maxVelocity = 2;
 
     this.wheelRotation = 0;
@@ -173,114 +172,79 @@ export class Car {
   }
 
   updateCamera(oldH, newH) {
-    // oldH = Number(oldH.toFixed(3));
-    // newH = Number(newH.toFixed(3));
-    // if (Math.abs(newH - oldH) > this.maxSteering) {
-    //   newH += Math.PI;
+    if (Math.abs(newH - oldH) > this.maxSteering + 0.01) return;
+    // if (Math.abs(newH - oldH) > this.maxSteering + 0.01) {
+    //   if (newH < 0 && oldH >= 0) {
+    //     newH += Math.PI * 2;
+    //   }
+    //   if (oldH < 0 && newH >= 0) {
+    //     oldH += Math.PI * 2;
+    //   }
     // }
-    // if (oldH == newH) {
-    //   if (this.camera.rotation[1] < -0.01) {
-    //     vec3.add(
-    //       this.camera.rotation,
-    //       this.camera.rotation,
-    //       vec3.fromValues(0, 0.01, 0)
-    //     );
-    //   } else if (this.camera.rotation[1] > 0.01) {
-    //     vec3.add(
-    //       this.camera.rotation,
-    //       this.camera.rotation,
-    //       vec3.fromValues(0, -0.01, 0)
-    //     );
-    //   }
-    //   if (
-    //     this.cameraLocation.translation[0] <
-    //     this.cameraLocationBase[0] - 0.5
-    //   ) {
-    //     this.prevHeading -= 0.1;
-    //     let newX1 =
-    //       this.cameraLocationBase[0] *
-    //         Math.cos(-((this.resetH || newH) - this.prevHeading) * 0.2) -
-    //       this.cameraLocationBase[2] *
-    //         Math.sin(-((this.resetH || newH) - this.prevHeading) * 0.2);
-    //     let newY1 =
-    //       this.cameraLocationBase[0] *
-    //         Math.sin(-((this.resetH || newH) - this.prevHeading) * 0.2) +
-    //       this.cameraLocationBase[2] *
-    //         Math.cos(-((this.resetH || newH) - this.prevHeading) * 0.2);
-    //     vec3.set(
-    //       this.cameraLocation.translation,
-    //       newX1,
-    //       this.cameraLocation.translation[1],
-    //       newY1
-    //     );
-    //   } else if (
-    //     this.cameraLocation.translation[0] >
-    //     this.cameraLocationBase[0] + 0.5
-    //   ) {
-    //     this.prevHeading += 0.1;
-    //     let newX1 =
-    //       this.cameraLocationBase[0] *
-    //         Math.cos(-((this.resetH || newH) - this.prevHeading) * 0.2) -
-    //       this.cameraLocationBase[2] *
-    //         Math.sin(-((this.resetH || newH) - this.prevHeading) * 0.2);
-    //     let newY1 =
-    //       this.cameraLocationBase[0] *
-    //         Math.sin(-((this.resetH || newH) - this.prevHeading) * 0.2) +
-    //       this.cameraLocationBase[2] *
-    //         Math.cos(-((this.resetH || newH) - this.prevHeading) * 0.2);
-    //     vec3.set(
-    //       this.cameraLocation.translation,
-    //       newX1,
-    //       this.cameraLocation.translation[1],
-    //       newY1
-    //     );
-    //   } else {
-    //     this.prevHeading = newH;
-    //     this.resetH = undefined;
-    //   }
-    // } else {
-    //   vec3.add(
-    //     this.camera.rotation,
-    //     this.camera.rotation,
-    //     vec3.fromValues(0, (newH - oldH) * 0.2, 0)
-    //   );
-    //   console.log(this.camera.rotation);
-    //   vec3.set(
-    //     this.camera.rotation,
-    //     this.camera.rotation[0],
-    //     Utils.clamp(this.camera.rotation[1], -Math.PI / 30, Math.PI / 30),
-    //     this.camera.rotation[2]
-    //   );
-    //   if (
-    //     !(
-    //       Math.abs(this.prevCameraRot.toFixed(4)) - 0.001 <
-    //         Math.abs(this.camera.rotation[1].toFixed(4)) &&
-    //       Math.abs(this.prevCameraRot.toFixed(4)) + 0.001 >
-    //         Math.abs(this.camera.rotation[1].toFixed(4))
-    //     )
-    //   ) {
-    //     let newX1 =
-    //       this.cameraLocationBase[0] *
-    //         Math.cos(-(newH - this.prevHeading) * 0.2) -
-    //       this.cameraLocationBase[2] *
-    //         Math.sin(-(newH - this.prevHeading) * 0.2);
-    //     let newY1 =
-    //       this.cameraLocationBase[0] *
-    //         Math.sin(-(newH - this.prevHeading) * 0.2) +
-    //       this.cameraLocationBase[2] *
-    //         Math.cos(-(newH - this.prevHeading) * 0.2);
-    //     vec3.set(
-    //       this.cameraLocation.translation,
-    //       newX1,
-    //       this.cameraLocation.translation[1],
-    //       newY1
-    //     );
-    //     this.resetH = newH;
-    //   }
-    //   this.prevCameraRot = this.camera.rotation[1];
-    // }
-    // this.camera.updateMatrix();
-    // this.cameraLocation.updateMatrix();
+
+    oldH = Number(oldH.toFixed(3));
+    newH = Number(newH.toFixed(3));
+
+    if (oldH == newH) {
+      // if (this.camera.rotation[1] < -0.0151) {
+      //   vec3.add(
+      //     this.camera.rotation,
+      //     this.camera.rotation,
+      //     vec3.fromValues(0, 0.03, 0)
+      //   );
+      // } else if (this.camera.rotation[1] > 0.0151) {
+      //   vec3.add(
+      //     this.camera.rotation,
+      //     this.camera.rotation,
+      //     vec3.fromValues(0, -0.03, 0)
+      //   );
+      // }
+
+      vec3.set(
+        this.camera.rotation,
+        this.camera.rotation[0],
+        0,
+        this.camera.rotation[2]
+      );
+
+      this.resetHeading = newH;
+
+      // vec3.set(
+      //   this.cameraLocation.translation,
+      //   this.cameraLocationBase[0],
+      //   this.cameraLocation.translation[1],
+      //   this.cameraLocationBase[2]
+      // );
+    } else {
+      vec3.add(
+        this.camera.rotation,
+        this.camera.rotation,
+        vec3.fromValues(0, (newH - oldH) * 0.2, 0)
+      );
+      const MathPI30 = Math.PI / 30;
+      vec3.set(
+        this.camera.rotation,
+        this.camera.rotation[0],
+        Utils.clamp(this.camera.rotation[1], -MathPI30, MathPI30),
+        this.camera.rotation[2]
+      );
+      // if (Math.abs(this.camera.rotation[1]) < MathPI30) {
+      let newX1 =
+        this.cameraLocationBase[0] * Math.cos(-(newH - oldH) * 2) -
+        this.cameraLocationBase[2] * Math.sin(-(newH - oldH) * 2);
+      let newY1 =
+        this.cameraLocationBase[0] * Math.sin(-(newH - oldH) * 2) +
+        this.cameraLocationBase[2] * Math.cos(-(newH - oldH) * 2);
+      vec3.set(
+        this.cameraLocation.translation,
+        newX1,
+        this.cameraLocation.translation[1],
+        newY1
+      );
+      // }
+    }
+    this.camera.updateMatrix();
+    this.cameraLocation.updateMatrix();
   }
 
   turnLeft(dt) {
